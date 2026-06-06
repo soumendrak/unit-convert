@@ -178,6 +178,10 @@ footer a:hover { color: var(--accent); }
     <div class="cat-btn" data-cat="weight">Weight</div>
     <div class="cat-btn" data-cat="area">Area</div>
     <div class="cat-btn" data-cat="volume">Volume</div>
+    <div class="cat-btn" data-cat="speed">Speed</div>
+    <div class="cat-btn" data-cat="pressure">Pressure</div>
+    <div class="cat-btn" data-cat="energy">Energy</div>
+    <div class="cat-btn" data-cat="storage">Storage</div>
 </div>
 <div class="converter-card">
     <div class="converter-content active" id="cat-temp">
@@ -245,6 +249,58 @@ footer a:hover { color: var(--accent); }
         </div>
         <div class="result-label">converted</div>
     </div>
+    <div class="converter-content" id="cat-speed">
+        <div class="converter-row">
+            <select id="spdFrom"></select>
+            <input type="number" id="spdInput" value="1" step="any">
+            <button class="swap-btn" data-cat="speed" title="Swap units">⇄</button>
+            <select id="spdTo"></select>
+        </div>
+        <div class="result-row">
+            <span class="result-value" id="spdResult">0.621371</span>
+            <span class="result-unit" id="spdResultUnit">mph</span>
+        </div>
+        <div class="result-label">converted</div>
+    </div>
+    <div class="converter-content" id="cat-pressure">
+        <div class="converter-row">
+            <select id="prsFrom"></select>
+            <input type="number" id="prsInput" value="1" step="any">
+            <button class="swap-btn" data-cat="pressure" title="Swap units">⇄</button>
+            <select id="prsTo"></select>
+        </div>
+        <div class="result-row">
+            <span class="result-value" id="prsResult">0.01</span>
+            <span class="result-unit" id="prsResultUnit">hPa</span>
+        </div>
+        <div class="result-label">converted</div>
+    </div>
+    <div class="converter-content" id="cat-energy">
+        <div class="converter-row">
+            <select id="engFrom"></select>
+            <input type="number" id="engInput" value="1" step="any">
+            <button class="swap-btn" data-cat="energy" title="Swap units">⇄</button>
+            <select id="engTo"></select>
+        </div>
+        <div class="result-row">
+            <span class="result-value" id="engResult">0.239006</span>
+            <span class="result-unit" id="engResultUnit">cal</span>
+        </div>
+        <div class="result-label">converted</div>
+    </div>
+    <div class="converter-content" id="cat-storage">
+        <div class="converter-row">
+            <select id="stgFrom"></select>
+            <input type="number" id="stgInput" value="1" step="any">
+            <button class="swap-btn" data-cat="storage" title="Swap units">⇄</button>
+            <select id="stgTo"></select>
+        </div>
+        <div class="result-row">
+            <span class="result-value" id="stgResult">1024</span>
+            <span class="result-unit" id="stgResultUnit">KB</span>
+        </div>
+        <div class="result-label">converted</div>
+    </div>
 </div>
 <footer>
     <a href="https://soumendrak.github.io/unit-convert/">soumendrak — licensed under MIT</a>
@@ -279,17 +335,53 @@ const categories = {
         units: ['mL', 'L', 'gal (US)', 'cup', 'fl oz'],
         toBase: { 'mL': v => v / 1000, 'L': v => v, 'gal (US)': v => v * 3.78541, 'cup': v => v * 0.236588, 'fl oz': v => v * 0.0295735 },
         fromBase: { 'mL': v => v * 1000, 'L': v => v, 'gal (US)': v => v / 3.78541, 'cup': v => v / 0.236588, 'fl oz': v => v / 0.0295735 }
+    },
+    speed: {
+        units: ['km/h', 'mph', 'knot', 'mach'],
+        toBase: { 'km/h': v => v / 3.6, 'mph': v => v * 0.44704, 'knot': v => v * 0.514444, 'mach': v => v * 343 },
+        fromBase: { 'km/h': v => v * 3.6, 'mph': v => v / 0.44704, 'knot': v => v / 0.514444, 'mach': v => v / 343 }
+    },
+    pressure: {
+        units: ['Pa', 'hPa', 'kPa', 'bar', 'psi', 'atm'],
+        toBase: { 'Pa': v => v, 'hPa': v => v * 100, 'kPa': v => v * 1000, 'bar': v => v * 100000, 'psi': v => v * 6894.76, 'atm': v => v * 101325 },
+        fromBase: { 'Pa': v => v, 'hPa': v => v / 100, 'kPa': v => v / 1000, 'bar': v => v / 100000, 'psi': v => v / 6894.76, 'atm': v => v / 101325 }
+    },
+    energy: {
+        units: ['J', 'kJ', 'cal', 'kcal', 'Wh', 'kWh'],
+        toBase: { 'J': v => v, 'kJ': v => v * 1000, 'cal': v => v * 4.184, 'kcal': v => v * 4184, 'Wh': v => v * 3600, 'kWh': v => v * 3600000 },
+        fromBase: { 'J': v => v, 'kJ': v => v / 1000, 'cal': v => v / 4.184, 'kcal': v => v / 4184, 'Wh': v => v / 3600, 'kWh': v => v / 3600000 }
+    },
+    storage: {
+        units: ['B', 'KB', 'MB', 'GB', 'TB'],
+        toBase: { 'B': v => v, 'KB': v => v * 1024, 'MB': v => v * 1048576, 'GB': v => v * 1073741824, 'TB': v => v * 1099511627776 },
+        fromBase: { 'B': v => v, 'KB': v => v / 1024, 'MB': v => v / 1048576, 'GB': v => v / 1073741824, 'TB': v => v / 1099511627776 }
     }
 };
 
-const catKeys = ['temp', 'length', 'weight', 'area', 'volume'];
+const catKeys = ['temp', 'length', 'weight', 'area', 'volume', 'speed', 'pressure', 'energy', 'storage'];
+const prefixMap = {
+    temp: 'temp', length: 'len', weight: 'wgt', area: 'area', volume: 'vol',
+    speed: 'spd', pressure: 'prs', energy: 'eng', storage: 'stg'
+};
+const defaults = {
+    temp: { from: '°C', to: '°F' },
+    length: { from: 'm', to: 'mm' },
+    weight: { from: 'kg', to: 'mg' },
+    area: { from: 'sq m', to: 'sq mm' },
+    volume: { from: 'L', to: 'mL' },
+    speed: { from: 'km/h', to: 'mph' },
+    pressure: { from: 'Pa', to: 'hPa' },
+    energy: { from: 'J', to: 'cal' },
+    storage: { from: 'MB', to: 'KB' }
+};
+
 const selects = {};
 const inputs = {};
 const results = {};
 const resultUnits = {};
 
 catKeys.forEach(key => {
-    const prefix = key === 'temp' ? 'temp' : key === 'length' ? 'len' : key === 'weight' ? 'wgt' : key === 'area' ? 'area' : 'vol';
+    const prefix = prefixMap[key];
     selects[key + 'From'] = document.getElementById(prefix + 'From');
     selects[key + 'To'] = document.getElementById(prefix + 'To');
     inputs[key] = document.getElementById(prefix + 'Input');
@@ -307,31 +399,12 @@ function populateSelect(sel, units) {
     });
 }
 
-// Populate and set defaults
-populateSelect(selects['tempFrom'], categories.temp.units);
-populateSelect(selects['tempTo'], categories.temp.units);
-selects['tempFrom'].value = '°C';
-selects['tempTo'].value = '°F';
-
-populateSelect(selects['lengthFrom'], categories.length.units);
-populateSelect(selects['lengthTo'], categories.length.units);
-selects['lengthFrom'].value = 'm';
-selects['lengthTo'].value = 'mm';
-
-populateSelect(selects['weightFrom'], categories.weight.units);
-populateSelect(selects['weightTo'], categories.weight.units);
-selects['weightFrom'].value = 'kg';
-selects['weightTo'].value = 'mg';
-
-populateSelect(selects['areaFrom'], categories.area.units);
-populateSelect(selects['areaTo'], categories.area.units);
-selects['areaFrom'].value = 'sq m';
-selects['areaTo'].value = 'sq mm';
-
-populateSelect(selects['volumeFrom'], categories.volume.units);
-populateSelect(selects['volumeTo'], categories.volume.units);
-selects['volumeFrom'].value = 'L';
-selects['volumeTo'].value = 'mL';
+catKeys.forEach(key => {
+    populateSelect(selects[key + 'From'], categories[key].units);
+    populateSelect(selects[key + 'To'], categories[key].units);
+    selects[key + 'From'].value = defaults[key].from;
+    selects[key + 'To'].value = defaults[key].to;
+});
 
 function convert(catKey) {
     const cat = categories[catKey];
@@ -347,7 +420,7 @@ function convert(catKey) {
 }
 
 catKeys.forEach(key => {
-    const prefix = key === 'temp' ? 'temp' : key === 'length' ? 'len' : key === 'weight' ? 'wgt' : key === 'area' ? 'area' : 'vol';
+    const prefix = prefixMap[key];
     const fromSel = selects[key + 'From'];
     const toSel = selects[key + 'To'];
     const input = inputs[key];
